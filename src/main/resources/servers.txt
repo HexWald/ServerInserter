@@ -1,0 +1,3 @@
+Hypixel;mc.hypixel.net
+Localhost;127.0.0.1
+Test;play.example.com
