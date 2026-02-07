@@ -37,8 +37,11 @@ SERVERS.TXT FORMAT
 
 Server Name;IP Address
 
-Example: Hypixel;mc.hypixel.net My SMP;play.mysmp.org Local
-Server;127.0.0.1
+Example: 
+
+Hypixel;mc.hypixel.net 
+My SMP;play.mysmp.org 
+Local Server;127.0.0.1
 
 ------------------------------------------------------------------------
 
