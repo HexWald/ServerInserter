@@ -39,9 +39,11 @@ Server Name;IP Address
 
 Example: 
 
+```
 Hypixel;mc.hypixel.net 
 My SMP;play.mysmp.org 
 Local Server;127.0.0.1
+```
 
 ------------------------------------------------------------------------
 
@@ -83,6 +85,11 @@ DISCLAIMER
 
 This tool modifies Minecraft servers.dat. Always backup your file before
 importing.
+
+SCREENSHOT
+
+<img width="892" height="646" alt="изображение" src="https://github.com/user-attachments/assets/3195d040-48ed-47de-a19d-6a0e4b1e63a8" />
+
 
 ------------------------------------------------------------------------
 
