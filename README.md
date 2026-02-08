@@ -5,11 +5,16 @@ file into servers.dat.
 
 ------------------------------------------------------------------------
 
-FEATURES - Modern UI (FlatLaf) - Dark / Light theme toggle - Drag & Drop
-file support - Preview servers before importing - Format validation -
-Cross-platform (Windows / Linux / macOS) - Sorting servers in table -
-Auto scroll for large server lists
-
+FEATURES
+```
+- Modern UI (FlatLaf) 
+- Dark / Light theme toggle 
+- Drag & Drop file support - Preview servers before importing 
+- Format validation 
+- Cross-platform (Windows / Linux / macOS)
+- Sorting servers in table
+- Auto scroll for large server lists
+```
 ------------------------------------------------------------------------
 
 MOTIVATION
