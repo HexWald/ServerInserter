@@ -81,7 +81,7 @@ public class MainWindow extends JFrame {
 
         JButton load = new JButton("Load Preview");
         JButton insert = new JButton("Insert Servers");
-        JButton theme = new JButton("Toggle Theme");
+        JButton theme = new JButton("Change Theme (D/L)");
 
         load.addActionListener(e -> loadPreview());
         insert.addActionListener(e -> insert());
