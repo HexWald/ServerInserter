@@ -147,12 +147,17 @@ public class MainWindow extends JFrame {
     private void insert() {
 
         try {
-            ServerService.insert(
+            File backup = ServerService.insert(
                     new File(txtDat.getText()),
                     tableModel.getServers()
             );
 
-            JOptionPane.showMessageDialog(this, "Servers inserted!");
+            String message = "Servers inserted!";
+            if (backup != null) {
+                message += "\nBackup created:\n" + backup.getAbsolutePath();
+            }
+
+            JOptionPane.showMessageDialog(this, message);
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());

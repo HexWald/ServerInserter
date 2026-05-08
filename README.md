@@ -13,6 +13,7 @@ A small quality-of-life application that helps you quickly import large server l
 * 📂 **Drag & Drop** support
 * 👀 **Preview servers** before importing
 * ✅ **Format validation**
+* 🛟 **Automatic backup** before editing an existing `servers.dat`
 * 💻 **Cross-platform**
 
   * Windows
@@ -51,6 +52,8 @@ Each line must follow this format:
 ```
 Server Name;IP Address
 ```
+
+Blank lines and lines starting with `#` are ignored, so you can keep short notes in the file.
 
 ### Example
 
@@ -112,9 +115,7 @@ java -jar target/minecraft-server-inserter.jar
 
 ## ⚠️ Disclaimer
 
-This tool **modifies Minecraft’s `servers.dat` file**.
-
-> **Always back up your file before importing servers.**
+This tool **modifies Minecraft’s `servers.dat` file**. If the file already exists, the app creates a timestamped `.bak` file next to it before writing changes.
 
 ---
 
