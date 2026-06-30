@@ -1,8 +1,8 @@
-package org.example.service;
+package dev.hexwald.serverinserter.service;
 
 import com.github.steveice10.opennbt.NBTIO;
 import com.github.steveice10.opennbt.tag.builtin.*;
-import org.example.model.ServerEntry;
+import dev.hexwald.serverinserter.model.ServerEntry;
 
 import java.io.File;
 import java.io.IOException;

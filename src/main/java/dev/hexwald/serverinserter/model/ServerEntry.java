@@ -1,4 +1,4 @@
-package org.example.model;
+package dev.hexwald.serverinserter.model;
 
 public class ServerEntry {
 

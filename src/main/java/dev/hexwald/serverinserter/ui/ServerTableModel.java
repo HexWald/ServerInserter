@@ -1,6 +1,6 @@
-package org.example.ui;
+package dev.hexwald.serverinserter.ui;
 
-import org.example.model.ServerEntry;
+import dev.hexwald.serverinserter.model.ServerEntry;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
-package org.example.util;
+package dev.hexwald.serverinserter.util;
 
-import org.example.model.ServerEntry;
+import dev.hexwald.serverinserter.model.ServerEntry;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

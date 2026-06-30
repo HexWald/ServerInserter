@@ -1,7 +1,7 @@
-package org.example;
+package dev.hexwald.serverinserter;
 
-import org.example.ui.MainWindow;
-import org.example.ui.ThemeManager;
+import dev.hexwald.serverinserter.ui.MainWindow;
+import dev.hexwald.serverinserter.ui.ThemeManager;
 
 import javax.swing.*;
 

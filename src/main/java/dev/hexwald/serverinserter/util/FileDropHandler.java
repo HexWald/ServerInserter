@@ -1,4 +1,4 @@
-package org.example.util;
+package dev.hexwald.serverinserter.util;
 
 import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
