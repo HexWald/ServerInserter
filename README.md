@@ -80,18 +80,24 @@ Local Server;127.0.0.1
 ### Requirements
 
 * Java **17+**
-* Maven
+* No local Maven install required. The repository includes Maven Wrapper.
 
 ### Build
 
 ```bash
-mvn clean package
+./mvnw clean package
+```
+
+On Windows:
+
+```bat
+mvnw.cmd clean package
 ```
 
 ### Run
 
 ```bash
-java -jar target/minecraft-server-inserter.jar
+java -jar target/minecraft-server-inserter-1.0.0.jar
 ```
 
 ---
