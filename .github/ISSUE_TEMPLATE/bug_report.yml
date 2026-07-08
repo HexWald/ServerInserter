@@ -1,0 +1,67 @@
+name: Bug report
+description: Report a problem with ServerInserter
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a problem.
+        Please include enough detail to reproduce it locally.
+
+  - type: input
+    id: version
+    attributes:
+      label: App version
+      description: Example: v1.0.0
+      placeholder: v1.0.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Windows
+        - Linux
+        - macOS
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: What did you click or select before the problem happened?
+      placeholder: |
+        1. Select servers.txt
+        2. Select servers.dat
+        3. Click Insert Servers
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+      description: What should have happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+      description: What happened instead? Attach screenshots if useful.
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console output
+      description: Paste any error text from the console if you have it.
+      render: text
