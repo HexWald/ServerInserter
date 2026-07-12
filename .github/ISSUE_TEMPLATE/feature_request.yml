@@ -1,0 +1,56 @@
+name: Feature request
+description: Suggest an improvement for ServerInserter
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Share what would make ServerInserter more useful or easier to use.
+        Small, focused ideas are easier to review and ship.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What feels slow, confusing, missing, or repetitive right now?
+      placeholder: I often need to...
+    validations:
+      required: true
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: Suggested solution
+      description: Describe the change you want to see.
+      placeholder: It would help if ServerInserter could...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: Have you tried another workflow or workaround?
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Import flow
+        - Preview table
+        - Backups
+        - File selection
+        - UI theme
+        - Build or release
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Extra context
+      description: Add screenshots, examples, or notes if they help.
