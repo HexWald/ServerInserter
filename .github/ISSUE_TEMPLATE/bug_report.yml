@@ -7,8 +7,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to report a problem.
-        Please include enough detail to reproduce it locally.
+        Keep it short, but include the exact files and clicks needed to reproduce the problem.
 
   - type: input
     id: version
@@ -35,7 +34,7 @@ body:
     id: steps
     attributes:
       label: Steps to reproduce
-      description: What did you click or select before the problem happened?
+      description: What did you select or click before the problem happened?
       placeholder: |
         1. Select servers.txt
         2. Select servers.dat
@@ -55,7 +54,7 @@ body:
     id: actual
     attributes:
       label: Actual result
-      description: What happened instead? Attach screenshots if useful.
+      description: What happened instead? Screenshots are welcome when the UI is involved.
     validations:
       required: true
 

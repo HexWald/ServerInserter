@@ -7,14 +7,13 @@ body:
   - type: markdown
     attributes:
       value: |
-        Share what would make ServerInserter more useful or easier to use.
-        Small, focused ideas are easier to review and ship.
+        Suggest one change at a time. A concrete workflow beats a big wishlist.
 
   - type: textarea
     id: problem
     attributes:
       label: Problem
-      description: What feels slow, confusing, missing, or repetitive right now?
+      description: What feels slow, confusing, missing, or repetitive?
       placeholder: I often need to...
     validations:
       required: true
@@ -24,7 +23,7 @@ body:
     attributes:
       label: Suggested solution
       description: Describe the change you want to see.
-      placeholder: It would help if ServerInserter could...
+      placeholder: ServerInserter should...
     validations:
       required: true
 

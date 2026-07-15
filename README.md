@@ -1,14 +1,14 @@
 # 🧩 Minecraft Server Inserter
 
-> **Modern GUI tool** for importing Minecraft multiplayer servers from a text file into `servers.dat`.
+> GUI tool for importing Minecraft multiplayer servers from a text file into `servers.dat`.
 
-A small quality-of-life application that helps you quickly import large server lists into Minecraft without manual editing.
+It is for the boring part: take a list, preview it, back up the old file, and write the entries in Minecraft's NBT format.
 
 ---
 
 ## ✨ Features
 
-* 🎨 **Modern UI** (FlatLaf)
+* 🎨 **FlatLaf UI**
 * 🌙 **Dark / Light theme toggle**
 * 📂 **Drag & Drop** support
 * 👀 **Preview servers** before importing
@@ -26,11 +26,9 @@ A small quality-of-life application that helps you quickly import large server l
 
 ## 🎯 Motivation
 
-This project started **just for fun**.
+This project started while testing a Minecraft server scanner.
 
-While experimenting with a Minecraft server scanner that parsed server names and IP addresses, I realized it would be useful to **import those results directly into Minecraft** instead of adding servers manually.
-
-What began as a simple script evolved into a full GUI application focused on convenience and usability.
+The scanner could collect names and addresses, but adding everything to Minecraft by hand was annoying. ServerInserter handles that last step without making you edit `servers.dat` yourself.
 
 ---
 
@@ -114,7 +112,7 @@ java -jar target/minecraft-server-inserter-1.0.0.jar
 
 ## 📦 Dependencies
 
-* **FlatLaf** — modern Swing look & feel
+* **FlatLaf** — Swing look and feel
 * **OpenNBT** — NBT file handling
 
 ---
