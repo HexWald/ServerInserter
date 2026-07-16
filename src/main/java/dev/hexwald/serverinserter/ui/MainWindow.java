@@ -1,6 +1,7 @@
 package dev.hexwald.serverinserter.ui;
 
 import dev.hexwald.serverinserter.model.ServerEntry;
+import dev.hexwald.serverinserter.service.ImportResult;
 import dev.hexwald.serverinserter.service.ServerService;
 import dev.hexwald.serverinserter.util.*;
 
@@ -208,19 +209,22 @@ public class MainWindow extends JFrame {
         List<ServerEntry> entries = new ArrayList<>(tableModel.getServers());
         setBusy(true, "Inserting " + entries.size() + " servers...");
 
-        SwingWorker<File, Void> worker = new SwingWorker<>() {
+        SwingWorker<ImportResult, Void> worker = new SwingWorker<>() {
             @Override
-            protected File doInBackground() throws Exception {
+            protected ImportResult doInBackground() throws Exception {
                 return ServerService.insert(new File(txtDat.getText()), entries);
             }
 
             @Override
             protected void done() {
                 try {
-                    File backup = get();
-                    String message = "Inserted " + entries.size() + " servers.";
-                    if (backup != null) {
-                        message += " Backup created: " + backup.getName();
+                    ImportResult result = get();
+                    String message = "Inserted " + result.inserted() + " servers.";
+                    if (result.skippedDuplicates() > 0) {
+                        message += " Skipped " + result.skippedDuplicates() + " duplicates.";
+                    }
+                    if (result.backupFile() != null) {
+                        message += " Backup: " + result.backupFile().getName();
                     }
                     setStatus(message);
                 } catch (Exception ex) {

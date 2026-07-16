@@ -14,6 +14,7 @@ It is for the boring part: take a list, preview it, back up the old file, and wr
 * 👀 **Preview servers** before importing
 * ✅ **Format validation**
 * 🛟 **Automatic backup** before editing an existing `servers.dat`
+* 🔁 **Duplicate IP skip** during insert
 * 💻 **Cross-platform**
 
   * Windows

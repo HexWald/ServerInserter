@@ -10,14 +10,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 public class ServerService {
 
     private static final DateTimeFormatter BACKUP_STAMP =
             DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss-SSS");
 
-    public static File insert(File datFile, List<ServerEntry> entries) throws Exception {
+    public static ImportResult insert(File datFile, List<ServerEntry> entries) throws Exception {
 
         if (datFile == null || datFile.getPath().isBlank()) {
             throw new IllegalArgumentException("Select servers.dat first.");
@@ -32,8 +35,6 @@ public class ServerService {
             throw new IOException("Cannot create folder: " + parent.getAbsolutePath());
         }
 
-        File backup = datFile.exists() ? createBackup(datFile) : null;
-
         CompoundTag root;
 
         if (datFile.exists()) {
@@ -44,18 +45,32 @@ public class ServerService {
         }
 
         ListTag list = root.get("servers");
+        Set<String> knownIps = collectKnownIps(list);
+        int inserted = 0;
+        int skippedDuplicates = 0;
 
         for (ServerEntry e : entries) {
+            String normalizedIp = normalizeIp(e.getIp());
+            if (!knownIps.add(normalizedIp)) {
+                skippedDuplicates++;
+                continue;
+            }
 
             CompoundTag tag = new CompoundTag("");
             tag.put(new StringTag("name", e.getName()));
             tag.put(new StringTag("ip", e.getIp()));
 
             list.add(tag);
+            inserted++;
         }
 
+        if (inserted == 0) {
+            return new ImportResult(0, skippedDuplicates, null);
+        }
+
+        File backup = datFile.exists() ? createBackup(datFile) : null;
         NBTIO.writeFile(root, datFile, false, false);
-        return backup;
+        return new ImportResult(inserted, skippedDuplicates, backup);
     }
 
     private static File createBackup(File datFile) throws IOException {
@@ -65,5 +80,27 @@ public class ServerService {
 
         Files.copy(source, backup);
         return backup.toFile();
+    }
+
+    private static Set<String> collectKnownIps(ListTag servers) {
+        Set<String> ips = new HashSet<>();
+
+        for (int i = 0; i < servers.size(); i++) {
+            Tag tag = servers.get(i);
+            if (!(tag instanceof CompoundTag serverTag)) {
+                continue;
+            }
+
+            Tag ipTag = serverTag.get("ip");
+            if (ipTag instanceof StringTag stringTag) {
+                ips.add(normalizeIp(stringTag.getValue()));
+            }
+        }
+
+        return ips;
+    }
+
+    private static String normalizeIp(String ip) {
+        return ip == null ? "" : ip.trim().toLowerCase(Locale.ROOT);
     }
 }

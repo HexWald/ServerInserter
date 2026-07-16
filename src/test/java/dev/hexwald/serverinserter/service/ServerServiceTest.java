@@ -23,12 +23,14 @@ class ServerServiceTest {
     void createsServersDatWhenMissing() throws Exception {
         File datFile = tempDir.resolve("servers.dat").toFile();
 
-        File backup = ServerService.insert(datFile, List.of(
+        ImportResult result = ServerService.insert(datFile, List.of(
                 new ServerEntry("Hypixel", "mc.hypixel.net"),
                 new ServerEntry("Localhost", "127.0.0.1")
         ));
 
-        assertNull(backup);
+        assertEquals(2, result.inserted());
+        assertEquals(0, result.skippedDuplicates());
+        assertNull(result.backupFile());
         assertTrue(datFile.isFile());
 
         ListTag servers = readServers(datFile);
@@ -42,14 +44,16 @@ class ServerServiceTest {
         File datFile = tempDir.resolve("servers.dat").toFile();
 
         ServerService.insert(datFile, List.of(new ServerEntry("First", "first.example.org")));
-        File backup = ServerService.insert(datFile, List.of(new ServerEntry("Second", "second.example.org")));
+        ImportResult result = ServerService.insert(datFile, List.of(new ServerEntry("Second", "second.example.org")));
 
-        assertNotNull(backup);
-        assertTrue(backup.isFile());
-        assertTrue(backup.getName().startsWith("servers.dat."));
-        assertTrue(backup.getName().endsWith(".bak"));
+        assertEquals(1, result.inserted());
+        assertEquals(0, result.skippedDuplicates());
+        assertNotNull(result.backupFile());
+        assertTrue(result.backupFile().isFile());
+        assertTrue(result.backupFile().getName().startsWith("servers.dat."));
+        assertTrue(result.backupFile().getName().endsWith(".bak"));
 
-        ListTag backupServers = readServers(backup);
+        ListTag backupServers = readServers(result.backupFile());
         assertEquals(1, backupServers.size());
         assertServer(backupServers, 0, "First", "first.example.org");
 
@@ -57,6 +61,43 @@ class ServerServiceTest {
         assertEquals(2, servers.size());
         assertServer(servers, 0, "First", "first.example.org");
         assertServer(servers, 1, "Second", "second.example.org");
+    }
+
+    @Test
+    void skipsDuplicateIpsWhileInsertingNewOnes() throws Exception {
+        File datFile = tempDir.resolve("servers.dat").toFile();
+
+        ServerService.insert(datFile, List.of(new ServerEntry("First", "first.example.org")));
+        ImportResult result = ServerService.insert(datFile, List.of(
+                new ServerEntry("Same existing", " FIRST.EXAMPLE.ORG "),
+                new ServerEntry("Second", "second.example.org"),
+                new ServerEntry("Same batch", "second.example.org")
+        ));
+
+        assertEquals(1, result.inserted());
+        assertEquals(2, result.skippedDuplicates());
+        assertNotNull(result.backupFile());
+
+        ListTag servers = readServers(datFile);
+        assertEquals(2, servers.size());
+        assertServer(servers, 0, "First", "first.example.org");
+        assertServer(servers, 1, "Second", "second.example.org");
+    }
+
+    @Test
+    void skipsAllDuplicatesWithoutCreatingBackup() throws Exception {
+        File datFile = tempDir.resolve("servers.dat").toFile();
+
+        ServerService.insert(datFile, List.of(new ServerEntry("First", "first.example.org")));
+        ImportResult result = ServerService.insert(datFile, List.of(new ServerEntry("Again", "first.example.org")));
+
+        assertEquals(0, result.inserted());
+        assertEquals(1, result.skippedDuplicates());
+        assertNull(result.backupFile());
+
+        ListTag servers = readServers(datFile);
+        assertEquals(1, servers.size());
+        assertServer(servers, 0, "First", "first.example.org");
     }
 
     @Test
