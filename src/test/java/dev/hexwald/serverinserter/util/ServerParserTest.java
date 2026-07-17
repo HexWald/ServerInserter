@@ -40,6 +40,27 @@ class ServerParserTest {
     }
 
     @Test
+    void parsesCommaSeparatedServerList() throws Exception {
+        Path file = tempDir.resolve("servers.csv.txt");
+        Files.writeString(
+                file,
+                """
+                Hypixel,mc.hypixel.net
+                Localhost, 127.0.0.1
+                """,
+                StandardCharsets.UTF_8
+        );
+
+        List<ServerEntry> servers = ServerParser.parse(file.toFile());
+
+        assertEquals(2, servers.size());
+        assertEquals("Hypixel", servers.get(0).getName());
+        assertEquals("mc.hypixel.net", servers.get(0).getIp());
+        assertEquals("Localhost", servers.get(1).getName());
+        assertEquals("127.0.0.1", servers.get(1).getIp());
+    }
+
+    @Test
     void rejectsInvalidLineWithLineNumber() throws Exception {
         Path file = tempDir.resolve("bad.txt");
         Files.writeString(file, "Hypixel mc.hypixel.net", StandardCharsets.UTF_8);

@@ -46,10 +46,11 @@ The application:
 
 ## 📝 servers.txt Format
 
-Each line must follow this format:
+Each line can use semicolon or comma:
 
 ```
 Server Name;IP Address
+Server Name,IP Address
 ```
 
 Blank lines and lines starting with `#` are ignored, so you can keep short notes in the file.
@@ -59,6 +60,7 @@ Blank lines and lines starting with `#` are ignored, so you can keep short notes
 ```txt
 Hypixel;mc.hypixel.net
 My SMP;play.mysmp.org
+Practice Server,practice.example.org
 Local Server;127.0.0.1
 ```
 

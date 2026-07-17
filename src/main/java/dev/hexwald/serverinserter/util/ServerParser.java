@@ -46,10 +46,10 @@ public class ServerParser {
     }
 
     private static ServerEntry parseLine(String line, int lineNum) throws Exception {
-        String[] parts = line.split(";", 2);
+        String[] parts = splitServerLine(line);
 
         if (parts.length != 2) {
-            throw new Exception("Format error on line " + lineNum + ". Expected: Server Name;IP Address");
+            throw new Exception("Format error on line " + lineNum + ". Expected: Server Name;IP Address or Server Name,IP Address");
         }
 
         String name = parts[0].trim();
@@ -60,5 +60,13 @@ public class ServerParser {
         }
 
         return new ServerEntry(name, ip);
+    }
+
+    private static String[] splitServerLine(String line) {
+        if (line.contains(";")) {
+            return line.split(";", 2);
+        }
+
+        return line.split(",", 2);
     }
 }
