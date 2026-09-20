@@ -127,10 +127,15 @@ public class MainWindow extends JFrame {
         JTextField field = new JTextField();
         field.setBorder(new EmptyBorder(6, 8, 6, 8));
 
-        field.setTransferHandler(new FileDropHandler(file -> {
-            field.setText(file.getAbsolutePath());
-            if (previewOnDrop) loadPreview();
-        }));
+        field.setTransferHandler(new FileDropHandler(
+                file -> {
+                    field.setText(file.getAbsolutePath());
+                    if (previewOnDrop) {
+                        loadPreview();
+                    }
+                },
+                this::setStatus
+        ));
 
         return field;
     }

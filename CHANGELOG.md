@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- Drag and drop now accepts one regular file at a time and explains why multiple files or folders are rejected.
+
 ## v1.0.0
 
 First stable release.
