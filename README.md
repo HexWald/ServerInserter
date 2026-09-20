@@ -1,89 +1,29 @@
-# 🧩 Minecraft Server Inserter
+# Minecraft Server Inserter
 
-> GUI tool for importing Minecraft multiplayer servers from a text file into `servers.dat`.
+A small Java desktop tool for adding Minecraft servers from a text file to `servers.dat`.
 
-It is for the boring part: take a list, preview it, back up the old file, and write the entries in Minecraft's NBT format.
+It reads a list, lets you check it in a table, creates a backup when needed, and writes the result as NBT. You do not need to edit `servers.dat` by hand.
 
----
+## Features
 
-## ✨ Features
+- preview the list before changing anything;
+- sort the preview table by name or address;
+- load files through a file chooser or drag and drop one file at a time;
+- accept semicolon or comma separated input;
+- ignore blank lines and comments starting with `#`;
+- skip addresses that are already in `servers.dat`;
+- create a timestamped backup before changing an existing file;
+- use a dark or light theme;
+- run on Windows, Linux, and macOS.
 
-* 🎨 **FlatLaf UI**
-* 🌙 **Dark / Light theme toggle**
-* 📂 **Drag & Drop** support
-* 👀 **Preview servers** before importing
-* ✅ **Format validation**
-* 🛟 **Automatic backup** before editing an existing `servers.dat`
-* 🔁 **Duplicate IP skip** during insert
-* 💻 **Cross-platform**
+## Requirements
 
-  * Windows
-  * Linux
-  * macOS
-* 📊 **Sortable server table**
-* 🔽 **Auto-scroll** for large lists
+- Java 17 or newer;
+- no separate Maven installation is needed because the Maven Wrapper is included.
 
----
+## Quick start
 
-## 🎯 Motivation
-
-This project started while testing a Minecraft server scanner.
-
-The scanner could collect names and addresses, but adding everything to Minecraft by hand was annoying. ServerInserter handles that last step without making you edit `servers.dat` yourself.
-
----
-
-## ⚙️ How It Works
-
-The application:
-
-1. Reads a `servers.txt` file
-2. Parses server entries
-3. Inserts them into Minecraft’s `servers.dat` file
-4. Uses **NBT format** for full compatibility
-
----
-
-## 📝 servers.txt Format
-
-Each line can use semicolon or comma:
-
-```
-Server Name;IP Address
-Server Name,IP Address
-```
-
-Blank lines and lines starting with `#` are ignored, so you can keep short notes in the file.
-
-### Example
-
-```txt
-Hypixel;mc.hypixel.net
-My SMP;play.mysmp.org
-Practice Server,practice.example.org
-Local Server;127.0.0.1
-```
-
----
-
-## 📁 Default Minecraft Paths
-
-| OS          | Path                                                  |
-| ----------- | ----------------------------------------------------- |
-| **Windows** | `%APPDATA%\.minecraft\servers.dat`                    |
-| **Linux**   | `~/.minecraft/servers.dat`                            |
-| **macOS**   | `~/Library/Application Support/minecraft/servers.dat` |
-
----
-
-## 🚀 Installation
-
-### Requirements
-
-* Java **17+**
-* No local Maven install required. The repository includes Maven Wrapper.
-
-### Build
+Build the application from the repository root:
 
 ```bash
 ./mvnw clean package
@@ -95,43 +35,76 @@ On Windows:
 mvnw.cmd clean package
 ```
 
-### Run
+Run the packaged application:
 
 ```bash
 java -jar target/minecraft-server-inserter-1.0.0.jar
 ```
 
----
+## How to use it
 
-## 🧭 Usage
+1. Select or drop your input text file.
+2. Select the Minecraft `servers.dat` file, or use the default path button.
+3. Click `Load Preview` and check the table.
+4. Click `Insert Servers`.
 
-1. Select or **drag & drop** `servers.txt`
-2. Select Minecraft `servers.dat`
-3. Click **Load Preview**
-4. Review the server list
-5. Click **Insert Servers**
+When an existing `servers.dat` is changed, the old file is copied next to it with a timestamp and the `.bak` extension.
 
----
+## Input format
 
-## 📦 Dependencies
+Use one server per line. Separate the name and address with `;` or `,`:
 
-* **FlatLaf** — Swing look and feel
-* **OpenNBT** — NBT file handling
+```text
+Hypixel;mc.hypixel.net
+My SMP;play.mysmp.org
+Practice Server,practice.example.org
+Local Server;127.0.0.1
+```
 
----
+Blank lines and comments are ignored:
 
-## ⚠️ Disclaimer
+```text
+# personal favorites
+Hypixel;mc.hypixel.net
+```
 
-This tool **modifies Minecraft’s `servers.dat` file**. If the file already exists, the app creates a timestamped `.bak` file next to it before writing changes.
+The parser splits at the first separator. Server names containing `;` or `,` are not supported by this simple format.
 
----
+## Default Minecraft paths
 
-## 🖼 Screenshot
+- Windows: `%APPDATA%\\.minecraft\\servers.dat`
+- Linux: `~/.minecraft/servers.dat`
+- macOS: `~/Library/Application Support/minecraft/servers.dat`
 
-<img width="892" height="646" alt="Screenshot" src="https://github.com/user-attachments/assets/3195d040-48ed-47de-a19d-6a0e4b1e63a8" />
+The default button uses these paths. If you use a custom launcher profile or game directory, select `servers.dat` manually.
 
----
+## What gets changed
 
-## 📄 License
+Only the `servers` list in the selected NBT file is updated. Existing entries and their other fields are kept. New entries contain a name and an address.
 
-MIT License
+If the address is already present, it is skipped. Duplicate addresses in the same import are also skipped.
+
+## Version history
+
+### Unreleased changes after v1.0.0
+
+- comma separated input is supported in addition to semicolon separated input;
+- duplicate addresses are skipped without creating an unnecessary backup;
+- repository documentation and issue templates were cleaned up.
+
+### v1.0.0
+
+First stable release. It introduced the Maven Wrapper, background UI actions, status messages, file chooser filters, the default path button, automated tests, and the shaded release JAR.
+
+The complete list is in [CHANGELOG.md](CHANGELOG.md).
+
+## Project files
+
+- `src/main/java` contains the application code;
+- `src/test/java` contains parser and NBT writing tests;
+- `pom.xml` defines the build and dependencies;
+- `.github/workflows/build.yml` runs tests and packages the JAR.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
