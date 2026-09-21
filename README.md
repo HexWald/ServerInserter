@@ -82,7 +82,7 @@ The default button uses these paths. If you use a custom launcher profile or gam
 
 Only the `servers` list in the selected NBT file is updated. Existing entries and their other fields are kept. New entries contain a name and an address.
 
-If the address is already present, it is skipped. Duplicate addresses in the same import are also skipped.
+If the address is already present, it is skipped. Duplicate checks ignore domain letter case, a final domain dot, and the default `25565` port. Bracketed and plain IPv6 addresses are also compared correctly.
 
 ## Version history
 

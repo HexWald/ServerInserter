@@ -5,6 +5,7 @@
 ### Fixed
 
 - Drag and drop now accepts one regular file at a time and explains why multiple files or folders are rejected.
+- Duplicate checks now treat the default port, domain letter case, final domain dot, and equivalent IPv6 forms correctly.
 
 ## v1.0.0
 

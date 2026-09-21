@@ -101,6 +101,31 @@ class ServerServiceTest {
     }
 
     @Test
+    void comparesEquivalentServerAddresses() throws Exception {
+        File datFile = tempDir.resolve("servers.dat").toFile();
+
+        ServerService.insert(datFile, List.of(
+                new ServerEntry("Domain", "Example.org."),
+                new ServerEntry("IPv6", "[2001:DB8::1]:25565")
+        ));
+
+        ImportResult result = ServerService.insert(datFile, List.of(
+                new ServerEntry("Same domain", " example.org:25565 "),
+                new ServerEntry("Same IPv6", "2001:db8::1"),
+                new ServerEntry("Custom port", "EXAMPLE.ORG:25566"),
+                new ServerEntry("Custom IPv6 port", "[2001:db8::1]:25566")
+        ));
+
+        assertEquals(2, result.inserted());
+        assertEquals(2, result.skippedDuplicates());
+
+        ListTag servers = readServers(datFile);
+        assertEquals(4, servers.size());
+        assertServer(servers, 2, "Custom port", "EXAMPLE.ORG:25566");
+        assertServer(servers, 3, "Custom IPv6 port", "[2001:db8::1]:25566");
+    }
+
+    @Test
     void rejectsEmptyInsertList() {
         File datFile = tempDir.resolve("servers.dat").toFile();
 

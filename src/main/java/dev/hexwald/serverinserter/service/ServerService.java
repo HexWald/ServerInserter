@@ -101,6 +101,59 @@ public class ServerService {
     }
 
     private static String normalizeIp(String ip) {
-        return ip == null ? "" : ip.trim().toLowerCase(Locale.ROOT);
+        if (ip == null) {
+            return "";
+        }
+
+        String address = ip.trim().toLowerCase(Locale.ROOT);
+        if (address.startsWith("[")) {
+            int closingBracket = address.indexOf(']');
+            if (closingBracket > 0) {
+                String host = address.substring(1, closingBracket);
+                String suffix = address.substring(closingBracket + 1).trim();
+                if (suffix.isEmpty() || isDefaultPort(suffix)) {
+                    return host;
+                }
+                return "[" + host + "]" + normalizePortSuffix(suffix);
+            }
+        }
+
+        int firstColon = address.indexOf(':');
+        int lastColon = address.lastIndexOf(':');
+        if (firstColon >= 0 && firstColon == lastColon) {
+            String host = trimFinalDot(address.substring(0, firstColon).trim());
+            String suffix = address.substring(firstColon).trim();
+            if (isDefaultPort(suffix)) {
+                return host;
+            }
+            return host + normalizePortSuffix(suffix);
+        }
+
+        if (firstColon < 0) {
+            return trimFinalDot(address);
+        }
+
+        return address;
+    }
+
+    private static boolean isDefaultPort(String suffix) {
+        return ":25565".equals(normalizePortSuffix(suffix));
+    }
+
+    private static String normalizePortSuffix(String suffix) {
+        if (!suffix.startsWith(":")) {
+            return suffix;
+        }
+
+        String port = suffix.substring(1).trim();
+        try {
+            return ":" + Integer.parseInt(port);
+        } catch (NumberFormatException ignored) {
+            return ":" + port;
+        }
+    }
+
+    private static String trimFinalDot(String host) {
+        return host.endsWith(".") ? host.substring(0, host.length() - 1) : host;
     }
 }
