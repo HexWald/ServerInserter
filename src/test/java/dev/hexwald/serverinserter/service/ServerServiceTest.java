@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -133,6 +134,19 @@ class ServerServiceTest {
 
         assertEquals("Nothing to insert. Load preview first.", error.getMessage());
         assertFalse(Files.exists(datFile.toPath()));
+    }
+
+    @Test
+    void rejectsNbtWithoutServersList() throws Exception {
+        File datFile = tempDir.resolve("invalid.dat").toFile();
+        CompoundTag root = new CompoundTag("root");
+        root.put(new com.github.steveice10.opennbt.tag.builtin.StringTag("name", "not a server list"));
+        NBTIO.writeFile(root, datFile, false, false);
+
+        IOException error = assertThrows(IOException.class, () -> ServerService.insert(
+                datFile, List.of(new ServerEntry("Test", "example.org"))));
+
+        assertEquals("The selected NBT file does not contain a servers list.", error.getMessage());
     }
 
     private static ListTag readServers(File datFile) throws Exception {

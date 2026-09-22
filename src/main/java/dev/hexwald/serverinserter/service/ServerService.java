@@ -38,13 +38,22 @@ public class ServerService {
         CompoundTag root;
 
         if (datFile.exists()) {
-            root = (CompoundTag) NBTIO.readFile(datFile, false, false);
+            try {
+                root = NBTIO.readFile(datFile, false, false);
+            } catch (ClassCastException | IOException ex) {
+                throw new IOException("Could not read servers.dat as a valid NBT file.", ex);
+            }
         } else {
             root = new CompoundTag("servers");
             root.put(new ListTag("servers", CompoundTag.class));
         }
 
-        ListTag list = root.get("servers");
+        Tag serversTag = root.get("servers");
+        if (!(serversTag instanceof ListTag)) {
+            throw new IOException("The selected NBT file does not contain a servers list.");
+        }
+
+        ListTag list = (ListTag) serversTag;
         Set<String> knownIps = collectKnownIps(list);
         int inserted = 0;
         int skippedDuplicates = 0;
