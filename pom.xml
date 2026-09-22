@@ -65,7 +65,7 @@
         <dependency>
             <groupId>com.github.Steveice10</groupId>
             <artifactId>OpenNBT</artifactId>
-            <version>master-SNAPSHOT</version>
+            <version>84b893c3f7fe76d071145d29d73cf28143895655</version>
         </dependency>
 
         <dependency>

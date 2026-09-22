@@ -7,6 +7,7 @@
 - Drag and drop now accepts one regular file at a time and explains why multiple files or folders are rejected.
 - Duplicate checks now treat the default port, domain letter case, final domain dot, and equivalent IPv6 forms correctly.
 - Import results now show inserted entries, skipped duplicates, and the backup file in one clear status message.
+- OpenNBT is now pinned to the exact source revision used by the project.
 
 ## v1.0.0
 
