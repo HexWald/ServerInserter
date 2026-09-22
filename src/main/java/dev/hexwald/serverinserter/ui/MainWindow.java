@@ -224,12 +224,10 @@ public class MainWindow extends JFrame {
             protected void done() {
                 try {
                     ImportResult result = get();
-                    String message = "Inserted " + result.inserted() + " servers.";
-                    if (result.skippedDuplicates() > 0) {
-                        message += " Skipped " + result.skippedDuplicates() + " duplicates.";
-                    }
+                    String message = "Inserted: " + result.inserted()
+                            + " | Skipped duplicates: " + result.skippedDuplicates();
                     if (result.backupFile() != null) {
-                        message += " Backup: " + result.backupFile().getName();
+                        message += " | Backup: " + result.backupFile().getName();
                     }
                     setStatus(message);
                 } catch (Exception ex) {
