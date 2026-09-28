@@ -9,6 +9,7 @@
 - Import results now show inserted entries, skipped duplicates, and the backup file in one clear status message.
 - OpenNBT is now pinned to the exact source revision used by the project.
 - Changing the input file now clears the old preview before importing.
+- UTF-8 input files with a byte order mark now parse correctly.
 
 ## v1.0.0
 

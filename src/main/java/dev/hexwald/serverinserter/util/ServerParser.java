@@ -28,6 +28,9 @@ public class ServerParser {
             while ((line = br.readLine()) != null) {
 
                 lineNum++;
+                if (lineNum == 1 && line.startsWith("\uFEFF")) {
+                    line = line.substring(1);
+                }
                 String cleanLine = line.trim();
 
                 if (cleanLine.isEmpty() || cleanLine.startsWith("#")) {

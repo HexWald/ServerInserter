@@ -61,6 +61,18 @@ class ServerParserTest {
     }
 
     @Test
+    void ignoresUtf8Bom() throws Exception {
+        Path file = tempDir.resolve("servers-with-bom.txt");
+        Files.writeString(file, "\uFEFFHypixel;mc.hypixel.net", StandardCharsets.UTF_8);
+
+        List<ServerEntry> servers = ServerParser.parse(file.toFile());
+
+        assertEquals(1, servers.size());
+        assertEquals("Hypixel", servers.get(0).getName());
+        assertEquals("mc.hypixel.net", servers.get(0).getIp());
+    }
+
+    @Test
     void rejectsInvalidLineWithLineNumber() throws Exception {
         Path file = tempDir.resolve("bad.txt");
         Files.writeString(file, "Hypixel mc.hypixel.net", StandardCharsets.UTF_8);
