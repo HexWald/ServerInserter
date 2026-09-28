@@ -8,6 +8,7 @@
 - Duplicate checks now treat the default port, domain letter case, final domain dot, and equivalent IPv6 forms correctly.
 - Import results now show inserted entries, skipped duplicates, and the backup file in one clear status message.
 - OpenNBT is now pinned to the exact source revision used by the project.
+- Changing the input file now clears the old preview before importing.
 
 ## v1.0.0
 

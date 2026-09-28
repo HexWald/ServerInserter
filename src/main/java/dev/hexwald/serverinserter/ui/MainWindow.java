@@ -7,6 +7,8 @@ import dev.hexwald.serverinserter.util.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
@@ -22,6 +24,7 @@ public class MainWindow extends JFrame {
     private JButton defaultDatButton;
     private JLabel statusBar;
     private boolean busy;
+    private boolean previewLoaded;
 
     private final ServerTableModel tableModel = new ServerTableModel();
 
@@ -52,6 +55,22 @@ public class MainWindow extends JFrame {
         JPanel fields = new JPanel(new GridLayout(2, 1, 6, 6));
 
         txtServers = createFileField(true);
+        txtServers.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                clearPreview();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                clearPreview();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                clearPreview();
+            }
+        });
         txtDat = createFileField(false);
 
         fields.add(createChooser(
@@ -106,6 +125,7 @@ public class MainWindow extends JFrame {
 
         loadButton = new JButton("Load Preview");
         insertButton = new JButton("Insert Servers");
+        insertButton.setEnabled(false);
         JButton themeButton = new JButton("Change Theme (D/L)");
 
         loadButton.addActionListener(e -> loadPreview());
@@ -181,6 +201,7 @@ public class MainWindow extends JFrame {
             return;
         }
 
+        clearPreview();
         setBusy(true, "Loading preview...");
 
         SwingWorker<List<ServerEntry>, Void> worker = new SwingWorker<>() {
@@ -194,6 +215,7 @@ public class MainWindow extends JFrame {
                 try {
                     List<ServerEntry> list = get();
                     tableModel.setServers(list);
+                    previewLoaded = true;
                     setStatus("Loaded " + list.size() + " servers.");
                 } catch (Exception ex) {
                     handleError("Could not load preview.", ex);
@@ -255,7 +277,7 @@ public class MainWindow extends JFrame {
             loadButton.setEnabled(!busy);
         }
         if (insertButton != null) {
-            insertButton.setEnabled(!busy);
+            insertButton.setEnabled(!busy && previewLoaded);
         }
         if (defaultDatButton != null) {
             defaultDatButton.setEnabled(!busy);
@@ -264,6 +286,19 @@ public class MainWindow extends JFrame {
         if (message != null) {
             setStatus(message);
         }
+    }
+
+    private void clearPreview() {
+        if (!previewLoaded && tableModel.getRowCount() == 0) {
+            return;
+        }
+
+        previewLoaded = false;
+        tableModel.setServers(List.of());
+        if (insertButton != null) {
+            insertButton.setEnabled(false);
+        }
+        setStatus("Input file changed. Load preview again.");
     }
 
     private void setStatus(String message) {
