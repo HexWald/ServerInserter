@@ -9,8 +9,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        ThemeManager.applyDark();
-
-        SwingUtilities.invokeLater(MainWindow::new);
+        SwingUtilities.invokeLater(() -> {
+            ThemeManager.applyDark();
+            new MainWindow().setVisible(true);
+        });
     }
 }

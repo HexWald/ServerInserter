@@ -2,6 +2,7 @@ package dev.hexwald.serverinserter.util;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Locale;
 
 public class MinecraftPaths {
 
@@ -10,7 +11,7 @@ public class MinecraftPaths {
     }
 
     private static Path getMinecraftDirectory() {
-        String os = System.getProperty("os.name", "").toLowerCase();
+        String os = System.getProperty("os.name", "").toLowerCase(Locale.ROOT);
         String home = System.getProperty("user.home");
 
         if (os.contains("win")) {
@@ -27,23 +28,4 @@ public class MinecraftPaths {
         return Path.of(home, ".minecraft");
     }
 
-    public static String getHints() {
-        return """
-Default location of servers.dat:
-
-Windows:
-  %APPDATA%\\.minecraft\\servers.dat
-
-Linux:
-  ~/.minecraft/servers.dat
-
-MacOS:
-  ~/Library/Application Support/minecraft/servers.dat
-
-Tip:
-You can drag & drop files into the fields above.
-Format of servers.txt:
-ServerName;IP
-""";
-    }
 }

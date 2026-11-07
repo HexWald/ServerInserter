@@ -42,9 +42,7 @@ public class MainWindow extends JFrame {
         add(createTablePanel(), BorderLayout.CENTER);
         add(createBottomPanel(), BorderLayout.SOUTH);
 
-        setStatus("Ready. Select servers.txt to start.");
-
-        setVisible(true);
+        setStatus("Choose a text file and load the preview.");
     }
 
     private JPanel createTopPanel() {
@@ -74,13 +72,13 @@ public class MainWindow extends JFrame {
         txtDat = createFileField(false);
 
         fields.add(createChooser(
-                "servers.txt:",
+                "Server list",
                 txtServers,
                 new FileNameExtensionFilter("Text files (*.txt)", "txt"),
                 false
         ));
         fields.add(createChooser(
-                "servers.dat:",
+                "servers.dat",
                 txtDat,
                 new FileNameExtensionFilter("Minecraft server list (*.dat)", "dat"),
                 true
@@ -88,13 +86,8 @@ public class MainWindow extends JFrame {
 
         panel.add(fields, BorderLayout.NORTH);
 
-        JTextArea hint = new JTextArea(MinecraftPaths.getHints());
-        hint.setEditable(false);
-        hint.setOpaque(false);
-        hint.setFont(hint.getFont().deriveFont(11f));
-        hint.setBorder(new EmptyBorder(5, 5, 0, 5));
-
-        panel.add(hint, BorderLayout.CENTER);
+        JLabel hint = new JLabel("Close Minecraft before importing.");
+        panel.add(hint, BorderLayout.SOUTH);
 
         return panel;
     }
@@ -126,7 +119,7 @@ public class MainWindow extends JFrame {
         loadButton = new JButton("Load Preview");
         insertButton = new JButton("Insert Servers");
         insertButton.setEnabled(false);
-        JButton themeButton = new JButton("Change Theme (D/L)");
+        JButton themeButton = new JButton("Switch Theme");
 
         loadButton.addActionListener(e -> loadPreview());
         insertButton.addActionListener(e -> insert());
@@ -136,8 +129,8 @@ public class MainWindow extends JFrame {
         buttons.add(insertButton);
         buttons.add(themeButton);
 
-        panel.add(statusBar, BorderLayout.CENTER);
-        panel.add(buttons, BorderLayout.EAST);
+        panel.add(statusBar, BorderLayout.NORTH);
+        panel.add(buttons, BorderLayout.SOUTH);
 
         return panel;
     }
@@ -145,7 +138,6 @@ public class MainWindow extends JFrame {
     private JTextField createFileField(boolean previewOnDrop) {
 
         JTextField field = new JTextField();
-        field.setBorder(new EmptyBorder(6, 8, 6, 8));
 
         field.setTransferHandler(new FileDropHandler(
                 file -> {
@@ -166,6 +158,7 @@ public class MainWindow extends JFrame {
         panel.setBorder(new EmptyBorder(5, 0, 5, 0));
 
         JLabel label = new JLabel(name);
+        label.setLabelFor(field);
         label.setPreferredSize(new Dimension(110, 20));
 
         JButton browse = new JButton("Browse");
@@ -250,12 +243,15 @@ public class MainWindow extends JFrame {
             protected void done() {
                 try {
                     ImportResult result = get();
-                    String message = "Inserted: " + result.inserted()
-                            + " | Skipped duplicates: " + result.skippedDuplicates();
+                    String message = "Added " + result.inserted() + " servers. Skipped "
+                            + result.skippedDuplicates() + " duplicates.";
                     if (result.backupFile() != null) {
-                        message += " | Backup: " + result.backupFile().getName();
+                        message += " Backup saved as " + result.backupFile().getName() + ".";
                     }
                     setStatus(message);
+                    if (result.backupFile() != null) {
+                        statusBar.setToolTipText(result.backupFile().getAbsolutePath());
+                    }
                 } catch (Exception ex) {
                     handleError("Could not insert servers.", ex);
                 } finally {
@@ -307,6 +303,7 @@ public class MainWindow extends JFrame {
     private void setStatus(String message) {
         if (statusBar != null) {
             statusBar.setText(message);
+            statusBar.setToolTipText(message);
         }
     }
 

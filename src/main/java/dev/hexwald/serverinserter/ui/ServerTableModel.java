@@ -32,7 +32,7 @@ public class ServerTableModel extends AbstractTableModel {
 
     @Override
     public String getColumnName(int column) {
-        return column == 0 ? "Name" : "IP";
+        return column == 0 ? "Name" : "Address";
     }
 
     @Override
