@@ -3,6 +3,7 @@ package dev.hexwald.serverinserter.service;
 import com.github.steveice10.opennbt.NBTIO;
 import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
 import com.github.steveice10.opennbt.tag.builtin.ListTag;
+import com.github.steveice10.opennbt.tag.builtin.StringTag;
 import dev.hexwald.serverinserter.model.ServerEntry;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -140,13 +141,45 @@ class ServerServiceTest {
     void rejectsNbtWithoutServersList() throws Exception {
         File datFile = tempDir.resolve("invalid.dat").toFile();
         CompoundTag root = new CompoundTag("root");
-        root.put(new com.github.steveice10.opennbt.tag.builtin.StringTag("name", "not a server list"));
+        root.put(new StringTag("name", "not a server list"));
         NBTIO.writeFile(root, datFile, false, false);
 
         IOException error = assertThrows(IOException.class, () -> ServerService.insert(
                 datFile, List.of(new ServerEntry("Test", "example.org"))));
 
         assertEquals("The selected NBT file does not contain a servers list.", error.getMessage());
+    }
+
+    @Test
+    void leavesTheOriginalFileIntactWhenWritingFails() throws Exception {
+        Path datFile = tempDir.resolve("servers.dat");
+        ServerService.insert(datFile.toFile(), List.of(new ServerEntry("First", "first.example.org")));
+        byte[] original = Files.readAllBytes(datFile);
+
+        assertThrows(IOException.class, () -> ServerService.insert(
+                datFile.toFile(), List.of(new ServerEntry("x".repeat(70000), "second.example.org"))));
+
+        assertArrayEquals(original, Files.readAllBytes(datFile));
+        try (var files = Files.list(tempDir)) {
+            assertEquals(List.of(datFile), files.toList());
+        }
+    }
+
+    @Test
+    void rejectsAListOfStringsWithoutChangingTheFile() throws Exception {
+        File datFile = tempDir.resolve("servers.dat").toFile();
+        CompoundTag root = new CompoundTag("");
+        ListTag list = new ListTag("servers", StringTag.class);
+        list.add(new StringTag("", "example.org"));
+        root.put(list);
+        NBTIO.writeFile(root, datFile, false, false);
+        byte[] original = Files.readAllBytes(datFile.toPath());
+
+        IOException error = assertThrows(IOException.class, () -> ServerService.insert(
+                datFile, List.of(new ServerEntry("Test", "example.org"))));
+
+        assertEquals("The servers list does not contain server entries.", error.getMessage());
+        assertArrayEquals(original, Files.readAllBytes(datFile.toPath()));
     }
 
     private static ListTag readServers(File datFile) throws Exception {

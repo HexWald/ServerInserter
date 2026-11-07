@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
@@ -20,7 +21,7 @@ public class ServerService {
     private static final DateTimeFormatter BACKUP_STAMP =
             DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss-SSS");
 
-    public static ImportResult insert(File datFile, List<ServerEntry> entries) throws Exception {
+    public static ImportResult insert(File datFile, List<ServerEntry> entries) throws IOException {
 
         if (datFile == null || datFile.getPath().isBlank()) {
             throw new IllegalArgumentException("Select servers.dat first.");
@@ -30,16 +31,16 @@ public class ServerService {
             throw new IllegalArgumentException("Nothing to insert. Load preview first.");
         }
 
-        File parent = datFile.getAbsoluteFile().getParentFile();
-        if (parent != null && !parent.exists() && !parent.mkdirs()) {
-            throw new IOException("Cannot create folder: " + parent.getAbsolutePath());
+        Path target = datFile.toPath().toAbsolutePath();
+        if (Files.isSymbolicLink(target)) {
+            target = target.toRealPath();
         }
 
         CompoundTag root;
 
-        if (datFile.exists()) {
+        if (Files.exists(target)) {
             try {
-                root = NBTIO.readFile(datFile, false, false);
+                root = NBTIO.readFile(target.toFile(), false, false);
             } catch (ClassCastException | IOException ex) {
                 throw new IOException("Could not read servers.dat as a valid NBT file.", ex);
             }
@@ -49,11 +50,12 @@ public class ServerService {
         }
 
         Tag serversTag = root.get("servers");
-        if (!(serversTag instanceof ListTag)) {
+        if (!(serversTag instanceof ListTag list)) {
             throw new IOException("The selected NBT file does not contain a servers list.");
         }
-
-        ListTag list = (ListTag) serversTag;
+        if (list.getElementType() != null && list.getElementType() != CompoundTag.class) {
+            throw new IOException("The servers list does not contain server entries.");
+        }
         Set<String> knownIps = collectKnownIps(list);
         int inserted = 0;
         int skippedDuplicates = 0;
@@ -77,15 +79,21 @@ public class ServerService {
             return new ImportResult(0, skippedDuplicates, null);
         }
 
-        File backup = datFile.exists() ? createBackup(datFile) : null;
-        NBTIO.writeFile(root, datFile, false, false);
-        return new ImportResult(inserted, skippedDuplicates, backup);
+        Files.createDirectories(target.getParent());
+        Path temp = Files.createTempFile(target.getParent(), "servers-", ".tmp");
+        try {
+            NBTIO.writeFile(root, temp.toFile(), false, false);
+            File backup = Files.exists(target) ? createBackup(target) : null;
+            Files.move(temp, target, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+            return new ImportResult(inserted, skippedDuplicates, backup);
+        } finally {
+            Files.deleteIfExists(temp);
+        }
     }
 
-    private static File createBackup(File datFile) throws IOException {
-        Path source = datFile.toPath();
+    private static File createBackup(Path source) throws IOException {
         String stamp = BACKUP_STAMP.format(LocalDateTime.now());
-        Path backup = source.resolveSibling(datFile.getName() + "." + stamp + ".bak");
+        Path backup = source.resolveSibling(source.getFileName() + "." + stamp + ".bak");
 
         Files.copy(source, backup);
         return backup.toFile();
