@@ -4,16 +4,10 @@ title: "[Bug]: "
 labels:
   - bug
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Keep it short, but include the exact files and clicks needed to reproduce the problem.
-
   - type: input
     id: version
     attributes:
       label: App version
-      description: Example: v1.0.0
       placeholder: v1.0.0
     validations:
       required: true
@@ -54,7 +48,6 @@ body:
     id: actual
     attributes:
       label: Actual result
-      description: What happened instead? Screenshots are welcome when the UI is involved.
     validations:
       required: true
 

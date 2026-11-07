@@ -2,30 +2,18 @@
 
 ## Unreleased
 
-### Fixed
-
-- Drag and drop now accepts one regular file at a time and explains why multiple files or folders are rejected.
-- Duplicate checks now treat the default port, domain letter case, final domain dot, and equivalent IPv6 forms correctly.
-- Import results now show inserted entries, skipped duplicates, and the backup file in one clear status message.
-- OpenNBT is now pinned to the exact source revision used by the project.
-- Changing the input file now clears the old preview before importing.
-- UTF-8 input files with a byte order mark now parse correctly.
+- Write to a temporary file before replacing `servers.dat`. A failed write leaves the original file intact.
+- Reject malformed addresses and invalid ports in the preview, with the line number in the error.
+- Keep the selected paths fixed while loading or importing.
+- Show the import counts and backup name on a separate line.
+- Accept comma separators and UTF-8 files with a byte order mark.
+- Skip duplicate addresses, including addresses written with the default port.
+- Accept one file per drop and clear the preview when the input changes.
+- Pin the OpenNBT revision and run the build on Windows and Linux.
 
 ## v1.0.0
 
-First stable release.
-
-### Added
-
-- Maven Wrapper, so the project builds without a local Maven install.
-- GitHub Actions build workflow.
-- Automated tests for server list parsing and `servers.dat` writing.
-- Versioned release jar name.
-
-### Improved
-
-- UI actions for loading preview and inserting servers now run in background workers.
-- Added a status bar for load/import feedback.
-- Added file chooser filters for `.txt` and `.dat`.
-- Added a button for the default Minecraft `servers.dat` path.
-- Moved code from `org.example` to `dev.hexwald.serverinserter`.
+- Added the Maven Wrapper, a GitHub Actions build and tests for parsing and import.
+- Packaged the app as a runnable JAR.
+- Moved preview and import work off the UI thread.
+- Added import status, file filters and a shortcut to the default Minecraft folder.

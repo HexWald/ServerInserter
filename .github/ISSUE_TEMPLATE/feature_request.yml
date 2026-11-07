@@ -4,16 +4,11 @@ title: "[Feature]: "
 labels:
   - enhancement
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Suggest one change at a time. A concrete workflow beats a big wishlist.
-
   - type: textarea
     id: problem
     attributes:
       label: Problem
-      description: What feels slow, confusing, missing, or repetitive?
+      description: What are you trying to do?
       placeholder: I often need to...
     validations:
       required: true
