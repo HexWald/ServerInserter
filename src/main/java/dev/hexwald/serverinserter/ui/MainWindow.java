@@ -21,12 +21,12 @@ public class MainWindow extends JFrame {
     private JTextField txtDat;
     private JButton loadButton;
     private JButton insertButton;
-    private JButton defaultDatButton;
     private JLabel statusBar;
     private boolean busy;
     private boolean previewLoaded;
 
     private final ServerTableModel tableModel = new ServerTableModel();
+    private final List<JButton> fileButtons = new ArrayList<>();
 
     public MainWindow() {
 
@@ -169,6 +169,7 @@ public class MainWindow extends JFrame {
         label.setPreferredSize(new Dimension(110, 20));
 
         JButton browse = new JButton("Browse");
+        fileButtons.add(browse);
 
         browse.addActionListener(e -> {
             JFileChooser chooser = new JFileChooser();
@@ -184,8 +185,9 @@ public class MainWindow extends JFrame {
         actions.add(browse);
 
         if (includeDefaultButton) {
-            defaultDatButton = new JButton("Use default");
+            JButton defaultDatButton = new JButton("Use default");
             defaultDatButton.addActionListener(e -> useDefaultServersDat());
+            fileButtons.add(defaultDatButton);
             actions.add(defaultDatButton);
         }
 
@@ -201,13 +203,14 @@ public class MainWindow extends JFrame {
             return;
         }
 
+        File input = new File(txtServers.getText());
         clearPreview();
         setBusy(true, "Loading preview...");
 
         SwingWorker<List<ServerEntry>, Void> worker = new SwingWorker<>() {
             @Override
             protected List<ServerEntry> doInBackground() throws Exception {
-                return ServerParser.parse(new File(txtServers.getText()));
+                return ServerParser.parse(input);
             }
 
             @Override
@@ -229,17 +232,18 @@ public class MainWindow extends JFrame {
     }
 
     private void insert() {
-        if (busy) {
+        if (busy || !previewLoaded) {
             return;
         }
 
-        List<ServerEntry> entries = new ArrayList<>(tableModel.getServers());
+        File target = new File(txtDat.getText());
+        List<ServerEntry> entries = List.copyOf(tableModel.getServers());
         setBusy(true, "Inserting " + entries.size() + " servers...");
 
         SwingWorker<ImportResult, Void> worker = new SwingWorker<>() {
             @Override
             protected ImportResult doInBackground() throws Exception {
-                return ServerService.insert(new File(txtDat.getText()), entries);
+                return ServerService.insert(target, entries);
             }
 
             @Override
@@ -272,15 +276,14 @@ public class MainWindow extends JFrame {
     private void setBusy(boolean busy, String message) {
         this.busy = busy;
         setCursor(busy ? Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR) : Cursor.getDefaultCursor());
+        setDefaultCloseOperation(busy ? DO_NOTHING_ON_CLOSE : EXIT_ON_CLOSE);
 
-        if (loadButton != null) {
-            loadButton.setEnabled(!busy);
-        }
-        if (insertButton != null) {
-            insertButton.setEnabled(!busy && previewLoaded);
-        }
-        if (defaultDatButton != null) {
-            defaultDatButton.setEnabled(!busy);
+        txtServers.setEnabled(!busy);
+        txtDat.setEnabled(!busy);
+        loadButton.setEnabled(!busy);
+        insertButton.setEnabled(!busy && previewLoaded);
+        for (JButton button : fileButtons) {
+            button.setEnabled(!busy);
         }
 
         if (message != null) {

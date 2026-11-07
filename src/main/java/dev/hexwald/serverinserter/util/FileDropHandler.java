@@ -22,11 +22,15 @@ public class FileDropHandler extends TransferHandler {
 
     @Override
     public boolean canImport(TransferSupport support) {
-        return support.isDataFlavorSupported(DataFlavor.javaFileListFlavor);
+        return support.getComponent().isEnabled()
+                && support.isDataFlavorSupported(DataFlavor.javaFileListFlavor);
     }
 
     @Override
     public boolean importData(TransferSupport support) {
+        if (!canImport(support)) {
+            return false;
+        }
 
         try {
             Object data = support.getTransferable()
