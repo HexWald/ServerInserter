@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.1.0
 
 - Write to a temporary file before replacing `servers.dat`. A failed write leaves the original file intact.
 - Reject malformed addresses and invalid ports in the preview, with the line number in the error.
