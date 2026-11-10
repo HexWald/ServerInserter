@@ -70,6 +70,7 @@ public class ServerService {
             CompoundTag tag = new CompoundTag("");
             tag.put(new StringTag("name", e.getName()));
             tag.put(new StringTag("ip", e.getIp()));
+            tag.put(new ByteTag("hidden", (byte) 0));
 
             list.add(tag);
             inserted++;

@@ -1,7 +1,9 @@
 package dev.hexwald.serverinserter.service;
 
 import com.github.steveice10.opennbt.NBTIO;
+import com.github.steveice10.opennbt.tag.builtin.ByteTag;
 import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
+import com.github.steveice10.opennbt.tag.builtin.IntTag;
 import com.github.steveice10.opennbt.tag.builtin.ListTag;
 import com.github.steveice10.opennbt.tag.builtin.StringTag;
 import dev.hexwald.serverinserter.model.ServerEntry;
@@ -39,6 +41,31 @@ class ServerServiceTest {
         assertEquals(2, servers.size());
         assertServer(servers, 0, "Hypixel", "mc.hypixel.net");
         assertServer(servers, 1, "Localhost", "127.0.0.1");
+    }
+
+    @Test
+    void keepsSavedServerSettingsFromMinecraft263() throws Exception {
+        File datFile = tempDir.resolve("servers.dat").toFile();
+        CompoundTag saved = new CompoundTag("");
+        saved.put(new StringTag("name", "Existing"));
+        saved.put(new StringTag("ip", "existing.example.org"));
+        saved.put(new StringTag("icon", "AQID"));
+        saved.put(new ByteTag("acceptTextures", (byte) 1));
+        saved.put(new IntTag("acceptedCodeOfConduct", 1234));
+        saved.put(new ByteTag("hidden", (byte) 1));
+        CompoundTag root = new CompoundTag("");
+        ListTag servers = new ListTag("servers", CompoundTag.class);
+        servers.add(saved);
+        root.put(servers);
+        NBTIO.writeFile(root, datFile, false, false);
+
+        ServerService.insert(datFile, List.of(new ServerEntry("New", "new.example.org")));
+
+        ListTag imported = readServers(datFile);
+        CompoundTag existing = imported.get(0);
+        assertEquals(saved, existing);
+        CompoundTag added = imported.get(1);
+        assertEquals(new ByteTag("hidden", (byte) 0), added.get("hidden"));
     }
 
     @Test

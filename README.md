@@ -1,9 +1,9 @@
 # ServerInserter
 
-Adds servers from a text file to Minecraft's multiplayer list. Requires Java 17 or newer. [Download v1.1.0](https://github.com/HexWald/ServerInserter/releases/tag/v1.1.0)
+Adds servers from a text file to Minecraft's multiplayer list. Tested with Minecraft Java 26.3. ServerInserter runs on Java 17 or newer. [Download v1.1.1](https://github.com/HexWald/ServerInserter/releases/tag/v1.1.1)
 
 ```sh
-java -jar minecraft-server-inserter-1.1.0.jar
+java -jar minecraft-server-inserter-1.1.1.jar
 ```
 
 ## Import a list
@@ -34,7 +34,7 @@ Use brackets around an IPv6 address with a port. The default port is 25565.
 From the repository root, run `mvnw.cmd verify` on Windows or `./mvnw verify` on Linux and macOS.
 
 ```sh
-java -jar target/minecraft-server-inserter-1.1.0.jar
+java -jar target/minecraft-server-inserter-1.1.1.jar
 ```
 
 [Changelog](CHANGELOG.md) | [MIT license](LICENSE)

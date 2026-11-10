@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.1.1
+
+- Verified import against Minecraft Java 26.3. New entries are saved as visible, and existing server settings are kept.
+
 ## v1.1.0
 
 - Write to a temporary file before replacing `servers.dat`. A failed write leaves the original file intact.
